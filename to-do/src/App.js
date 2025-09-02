@@ -1,8 +1,11 @@
 import './App.css';
-import { useRef, useState } from 'react';
+import { useRef, useState , useEffect } from 'react';
 
 function App() {
-  const [toDoList, setToDoList] = useState([]);
+  const [toDoList, setToDoList] = useState(()=>{
+                          const savedList = localStorage.getItem("toDoList");
+                          return savedList ?  JSON.parse(savedList) : [];
+                        });
   const [inputItem, setInputItem] = useState("");
   const inputRef = useRef(null);
 
@@ -14,7 +17,7 @@ function App() {
   };
 
   const updateItem = (index) => {
-    const newItem = prompt("Enter new task", toDoList[index]);
+    const newItem = prompt("Enter updated task", toDoList[index]);
     if (newItem && newItem.trim()) {
       setToDoList(
         toDoList.map((item, i) => (i === index ? newItem : item))
@@ -25,6 +28,11 @@ function App() {
   const deleteItem = (index) => {
     setToDoList(toDoList.filter((_, i) => i !== index));
   };
+
+
+  useEffect(() => {
+    localStorage.setItem("toDoList", JSON.stringify(toDoList));
+  }, [toDoList]);
 
   return (
     <>
